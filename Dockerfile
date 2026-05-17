@@ -2,6 +2,9 @@ FROM php:8.3-fpm as builder
 
 WORKDIR /app
 
+ENV APP_ENV=prod \
+    APP_DEBUG=0
+
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -31,6 +34,9 @@ RUN php bin/console cache:warmup --env=prod --no-debug || true
 FROM php:8.3-fpm as runtime
 
 WORKDIR /app
+
+ENV APP_ENV=prod \
+    APP_DEBUG=0
 
 RUN apt-get update && apt-get install -y \
     nginx \
