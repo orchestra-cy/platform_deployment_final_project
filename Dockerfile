@@ -20,7 +20,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 COPY composer.json composer.lock ./
 
-RUN composer install --no-interaction --no-scripts --optimize-autoloader --no-dev 
+RUN composer install --no-interaction --no-scripts --optimize-autoloader --no-dev
 
 COPY . .
 
@@ -43,6 +43,14 @@ RUN apt-get update && apt-get install -y \
     curl \
     && docker-php-ext-install pdo pdo_mysql \
     && rm -rf /var/lib/apt/lists/*
+
+RUN { \
+    echo ""; \
+    echo "; App env"; \
+    echo "clear_env = no"; \
+    echo "env[APP_ENV] = prod"; \
+    echo "env[APP_DEBUG] = 0"; \
+} >> /usr/local/etc/php-fpm.d/www.conf
 
 COPY --from=builder /app /app
 
