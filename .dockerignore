@@ -52,6 +52,5 @@ compose.override-disable.yaml
 .gitpod.yml
 Makefile
 
-.env
 vendor/
 var/
