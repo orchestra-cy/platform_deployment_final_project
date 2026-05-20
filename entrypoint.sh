@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+echo "Migrating"
+php bin/console doctrine:migrations:migrate --env=prod --no-interaction
+
 echo "Starting PHP-FPM..."
 php-fpm -F &
 PHP_PID=$!
