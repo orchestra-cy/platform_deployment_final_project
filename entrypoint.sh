@@ -1,17 +1,21 @@
 #!/bin/bash
 set -e
 
-echo "Migrating"
+echo "Migrating..."
 php bin/console doctrine:migrations:migrate --env=prod --no-interaction
 
 echo "Starting PHP-FPM..."
 php-fpm -F &
-PHP_PID=$!
 
-echo "Waiting for PHP-FPM to start..."
-sleep 2
+# A short sleep is fine to let FPM bind to its socket/port
+sleep 2 
 
 echo "Starting Nginx..."
-nginx -g "daemon off;"
+nginx -g "daemon off;" &
 
-wait $PHP_PID
+# Wait for ANY of the background processes to exit
+wait -n
+
+# If we reach this point, either Nginx or PHP-FPM has crashed.
+echo "A critical process crashed. Exiting..."
+exit 1
